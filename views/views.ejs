@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+    <title>Audit Log</title>
+    <link rel="stylesheet" href="/main.css" />
+</head>
+<body>
+
+<h1>Audit Log</h1>
+
+<table border="1" cellpadding="8">
+    <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Action</th>
+        <th>Details</th>
+        <th>Timestamp</th>
+    </tr>
+
+    <% logs.forEach(function(row) { %>
+        <tr>
+            <td><%= row.id %></td>
+            <td><%= row.username %></td>
+            <td><%= row.action %></td>
+            <td><%= row.details %></td>
+            <td><%= row.timestamp %></td>
+        </tr>
+    <% }) %>
+</table>
+
+</body>
+</html>

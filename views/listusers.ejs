@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+    <title>User List</title>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<body>
+    <h1>Registered Users</h1>
+
+    <table border="1" cellpadding="8">
+        <tr>
+            <th>Username</th>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Email</th>
+        </tr>
+
+        <% users.forEach(function(user) { %>
+            <tr>
+                <td><%= user.username %></td>
+                <td><%= user.first %></td>
+                <td><%= user.last %></td>
+                <td><%= user.email %></td>
+            </tr>
+        <% }) %>
+
+    </table>
+</body>
+</html>
