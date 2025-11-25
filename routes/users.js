@@ -3,7 +3,14 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
-
+const redirectLogin = (req, res, next) => {
+    if (!req.session.userId ) {
+        res.redirect('./login')
+    } else {
+        next();
+    }
+}
+const { check, validationResult } = require('express-validator');
 // Show login page
 router.get('/login', function(req, res, next) {
     res.render('login.ejs');
@@ -15,7 +22,7 @@ router.get('/register', function (req, res, next) {
 });
 
 // List all users
-router.get('/list', function(req, res, next) {
+router.get('/list', redirectLogin, function(req, res, next) {
     let sqlquery = "SELECT username, first, last, email FROM users";
 
     db.query(sqlquery, (err, result) => {
@@ -27,7 +34,7 @@ router.get('/list', function(req, res, next) {
     });
 });
 
-router.get('/audit', function(req, res, next) {
+router.get('/audit', redirectLogin, function(req, res, next) {
     db.query("SELECT * FROM auditlog ORDER BY timestamp DESC", (err, result) => {
         if (err) {
             next(err);
@@ -38,7 +45,22 @@ router.get('/audit', function(req, res, next) {
 });
 
 // Handle registration
-router.post('/registered', function (req, res, next) {
+router.post('/registered',
+    [
+    check('email').isEmail().withMessage('Invalid email format.'),
+    check('username').isLength({ min: 5, max: 20 }).withMessage('Username must be 5–20 characters long.'),
+    check('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters long.'),
+    check('first').not().isEmpty().withMessage('First name cannot be empty.'),
+    check('last').not().isEmpty().withMessage('Last name cannot be empty.')
+    ], 
+    function (req, res, next) {
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
+            return res.render('./register');
+        }
+    
+        
 
     const plainPassword = req.body.password;
 
@@ -52,10 +74,10 @@ router.post('/registered', function (req, res, next) {
             let sqlquery = "INSERT INTO users (username, first, last, email, hashedPassword) VALUES (?,?,?,?,?)";
 
             let newrecord = [
-                req.body.username,
-                req.body.first,
-                req.body.last,
-                req.body.email,
+                req.sanitize(req.body.username),
+                req.sanitize(req.body.first),
+                req.sanitize(req.body.last),
+                req.sanitize(req.body.email),
                 hashedPassword
             ];
 
@@ -78,7 +100,6 @@ router.post('/registered', function (req, res, next) {
     });
 });
 
-// Handle login
 // Handle login
 router.post('/loggedin', function(req, res, next) {
 
@@ -109,7 +130,7 @@ router.post('/loggedin', function(req, res, next) {
                 if (err) {
                     next(err);
                 } else if (match === true) {
-
+                    req.session.userId = username;
                     // Log success
                     db.query(
                         "INSERT INTO auditlog (username, action, details) VALUES (?, 'SUCCESS', 'Correct password')",
@@ -133,7 +154,14 @@ router.post('/loggedin', function(req, res, next) {
         }
     });
 });
-
+router.get('/logout', redirectLogin, (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            return res.redirect('./');
+        }
+        res.send("You are now logged out. <a href='./'>Home</a>");
+    });
+});
 
 // Export for index.js
 module.exports = router;
