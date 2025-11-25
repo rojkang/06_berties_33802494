@@ -70,3 +70,10 @@ bargain.ejs
 5. Forever (PM2 alternative on VM)
 
 Used on the Goldsmiths Linux VM to keep the Node server running in the background.
+## dotenv
+To secure my database password, I used the dotenv module. 
+I created a .env file that stores DB_HOST, DB_USER, DB_PASS and DB_NAME.
+In index.js, I load the variables with require('dotenv').config() and use 
+process.env.DB_PASS instead of hard-coding the password. 
+I also added .env to .gitignore so it does not get pushed to GitHub.
+
