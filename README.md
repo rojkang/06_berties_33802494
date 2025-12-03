@@ -77,3 +77,27 @@ In index.js, I load the variables with require('dotenv').config() and use
 process.env.DB_PASS instead of hard-coding the password. 
 I also added .env to .gitignore so it does not get pushed to GitHub.
 
+Lab 8 Additions (Validation & Sanitisation)
+Sanitisation (express-sanitizer)
+
+To protect against XSS attacks, I sanitised form inputs such as:
+
+req.sanitize(req.body.firstname)
+req.sanitize(req.body.lastname)
+req.sanitize(req.body.email)
+
+
+This removes <script> tags and prevents JavaScript injection.
+
+Passwords are not sanitised to avoid breaking hashing/login.
+XSS Demonstration
+
+Before sanitisation, entering:
+
+Henry <script>alert("Gotcha!")</script>
+
+
+would trigger an alert.
+After sanitisation, the script is stripped and the attack no longer works
+
+
