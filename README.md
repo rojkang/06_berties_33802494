@@ -3,72 +3,46 @@
 A simple Node.js and Express web application for browsing books, searching titles, and showing weekly bargains.
 
 Overview
-
 Bertie’s Books is a small web app built as part of a Goldsmiths lab task.
 The application displays:
-
 A Home page
-
 A Books list
-
 A Search page (search by title)
-
 A Bargain of the Week
-
 Static HTML pages
-
 Dynamic pages rendered with EJS templates
-
 The backend handles routing and data serving, while the frontend uses clean HTML/CSS with EJS for templating.
+
 🛠️ Technologies Used
 1. Node.js
-
 The JavaScript runtime used to run the backend server.
 It allows us to build the app using server-side JavaScript.
 
 2. Express.js
-
 A lightweight Node.js framework used for:
-
 Creating routes (/, /books, /search)
-
 Serving static files
-
 Handling GET requests
-
 Rendering EJS templates
-
 It simplifies building servers without manually writing HTTP handling code.
 
 3. EJS (Embedded JavaScript Templates)
-
 EJS is used as the view engine of the project.
 It lets us:
-
 Use dynamic values in HTML pages
-
 Loop through book lists
-
 Render search results
-
 Pass data from Express into templates
-4. HTML & CSS
 
+4. HTML & CSS
 Used to structure and style all static and dynamic pages.
 Your app includes:
-
 home.html
-
 books.ejs
-
 search.ejs
-
-
 bargain.ejs
 …all styled with basic CSS.
-
 5. Forever (PM2 alternative on VM)
-
 Used on the Goldsmiths Linux VM to keep the Node server running in the background.
 ## dotenv
 To secure my database password, I used the dotenv module. 
@@ -79,25 +53,31 @@ I also added .env to .gitignore so it does not get pushed to GitHub.
 
 Lab 8 Additions (Validation & Sanitisation)
 Sanitisation (express-sanitizer)
-
 To protect against XSS attacks, I sanitised form inputs such as:
-
 req.sanitize(req.body.firstname)
 req.sanitize(req.body.lastname)
 req.sanitize(req.body.email)
-
-
 This removes <script> tags and prevents JavaScript injection.
-
 Passwords are not sanitised to avoid breaking hashing/login.
 XSS Demonstration
-
 Before sanitisation, entering:
-
 Henry <script>alert("Gotcha!")</script>
-
-
 would trigger an alert.
 After sanitisation, the script is stripped and the attack no longer works
+
+LAB 9
+1. Calling an External API (Weather)
+Created a new weather route and EJS page.
+Used the OpenWeatherMap API to fetch live weather data.
+Added an API key using .env.
+Displayed results for any city the user searches.
+
+2. Providing Our Own API (Books API)
+Created /api/books to return book data in JSON.
+Added support for:
+searching (?search=term)
+price filtering (?minprice=10&maxprice=20)
+sorting (?sort=name or sort=price)
+Combined all filters into one flexible API endpoint.
 
 
